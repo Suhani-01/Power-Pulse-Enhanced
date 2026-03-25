@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+           
+            margin: 0;
+            padding: 0;
+            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bs-nav-link-color: rgba(0, 0, 0, 0.65);
+            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+
+        header {
+            width: 100%;
+            position: fixed;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+        }
+
+        header div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 10px;
+        }
+
+        header h2 {
+            color: var(--primary-color);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 1.23rem;
+            list-style: none;
+
+        }
+
+        nav ul a {
+            color: var(--bs-nav-link-color);
+            transition: all ease 0.2s;
+        }
+
+        nav ul a:hover {
+            color: black;
+        }
+
+
+        .window {
+            max-width: 1290px;
+            width: 100%;
+            margin-inline: auto;
+        }
+
+
+        main {
+            padding-top: 100px;
+            padding-bottom: 40px;
+            background: var(--gradient-bg);
+        }
+
+        .map-container {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 20px;
+            overflow: hidden;
+            display: flex;
+            gap: 1rem;
+            transition: all ease 0.3s;
+        }
+        .map-container:hover{
+            transform: translateY(-5px);
+        }
+
+        .map-container img {
+            height: 800px;
+
+        }
+        .map-desc{
+            margin: 20px 0px;
+        }
+        .map-heading{
+            text-align: center;
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+        .discom-desc{
+            margin-top:10px ;
+        }
+        .location{
+            color: var(--secondary-color);
+        }
+
+        .main-para{
+            margin-bottom: 10px;
+        }
+        .agencies{
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .company-list{
+            margin-left: 10px;
+            list-style: none;
+            margin-bottom: 10px;
+        }
+        .company-list p{
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 0.97rem;
+        }
+        .sub-list{
+            margin-left: 30px;
+            list-style:disc;
+        }
+        .source{
+            margin-top: 20px;
+            text-align: end;
+        }
+
+
+        footer {
+            background-color: var(--primary-color);
+        }
+
+        .foot {
+            display: flex;
+            justify-content: space-between;
+            padding: 40px 0px;
+            color: white;
+        }
+
+        .foot h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .icons {
+            display: flex;
+            justify-content: end;
+            gap: 1rem;
+            margin-top: 1rem;
+
+        }
+
+        .icons i {
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!--------Header Section-------->
+    <header>
+        <div class="window">
+            <h2><i class="fa-solid fa-bolt"></i> PowerPulse Enhanced</h2>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('map') }}"><i class="fas fa-map-marked-alt"></i> Map</a></li>
+                    <li><a href="{{ url_for('forecast') }}"><i class="fa-solid fa-chart-line"></i> Forecast</a></li>
+                    <li><a class="log-out"><i class="fa-solid fa-right-from-bracket log-out"></i> Log Out</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!------------------------Main--------------->
+    <main>
+        <!------Map Container-------->
+        <div class="window map-container">
+
+            <!-------map Image--------->
+            <img alt="power distribution map" src="{{ url_for('static', filename='images/map.png') }}" />
+
+            <!--------Map Description--------->
+            <div class="map-desc">
+                <div>
+                <h2 class="map-heading"><i class="fa-solid fa-bolt"></i> Power Distribution in Delhi</h2>
+                <hr>
+               
+                <div class="discom-desc">
+                    <p class="main-para">Electricity distribution in Delhi is managed by three major private DISCOMs and two
+                        government/defense agencies. Together, they ensure uninterrupted supply across the entire city.
+                    </p>
+                    
+                    <h4 class="agencies">Major Distribution Companies (DISCOMs)</h4>
+                    <hr>
+                    <ul class="company-list">
+                        <li>
+                            <p><i class="location fa-solid fa-map-pin loc"></i> BSES Rajdhani Power Limited (BRPL)</p>
+                            <ul class="sub-list">
+                                <li>Covers South and West Delhi.</li>
+                                <li>Serves more than 2.5 million consumers.</li>
+                                <li>Joint venture of Reliance Infrastructure and Government of NCT Delhi.</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <p><i class="location fa-solid fa-map-pin loc"></i> BSES Yamuna Power Limited (BYPL)</p>
+                            <ul class="sub-list">
+                                <li>Covers Central and East Delhi.</li>
+                                <li>Serves around 1.7 million consumers.</li>
+                                <li>Also a joint venture of Reliance Infrastructure and GNCTD.</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <p><i class="location fa-solid fa-map-pin loc"></i> Tata Power Delhi Distribution Limited (TPDDL)</p>
+                            <ul class="sub-list">
+                                <li>Covers North and North-West Delhi.</li>
+                                <li>Serves over 1.8 million consumers.</li>
+                                <li>Joint venture of Tata Power and Government of NCT Delhi.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+
+                    <h4 class="agencies">Other Agencies</h4>
+                    <hr>
+                    <ul class="company-list">
+                        <li>
+                            <p><i class="location fa-solid fa-map-pin loc"></i> New Delhi Municipal Council (NDMC)</p>
+                            <ul class="sub-list">
+                                <li>A municipal body (not a company).</li>
+                                <li>Supplies electricity in Lutyens’ Delhi, Connaught Place, diplomatic areas, and nearby VIP zones.</li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <p><i class="location fa-solid fa-map-pin loc"></i> Military Engineering Services (MES)</p>
+                            <ul class="sub-list">
+                                <li>A defense organization under the Ministry of Defence.</li>
+                                <li>Manages electricity distribution in cantonment and military areas of Delhi.</li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+
+                <div class="source"><i>~ Map Source : <a href="https://www.dtl.gov.in/">DIT</a> (Delhi Transco Limited) </i></div>
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-----------Footer---------->
+    <footer>
+        <div class="window foot">
+            <div>
+                <h2><i class="fa-solid fa-bolt"></i> PowerPulse Enhanced</h2>
+                <p>Advanced electricity demand forecasting with AI-powered predictions.</p>
+            </div>
+
+            <div class="end-section">
+                <p>© 2025 PowerPulse Enhanced. All rights reserved.</p>
+                <div class="icons">
+                    <a href="#"><i class="fa-brands fa-github"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="#"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+</body>
+
+
+<script>
+    let logOutButton=document.querySelector('.log-out');
+    logOutButton.addEventListener('click',()=>{
+        let result=confirm("Are you sure you want to exit?")
+        if(result){
+            // Redirect to home page (Flask route)
+            window.location.href = "{{ url_for('index') }}";
+        }
+    });
+</script>
+
+</html>
