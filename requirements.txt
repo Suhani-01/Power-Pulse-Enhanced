@@ -8,3 +8,4 @@ joblib
 requests
 matplotlib
 gunicorn
+flask_sqlalchemy
