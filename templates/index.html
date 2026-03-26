@@ -56,13 +56,15 @@
             display: flex;
             gap: 1rem;
             list-style: none;
-            
+
         }
+
         nav ul a {
             color: var(--bs-nav-link-color);
             transition: all ease 0.2s;
         }
-        nav ul a:hover{
+
+        nav ul a:hover {
             color: black;
         }
 
@@ -129,7 +131,8 @@
             background: linear-gradient(45deg, var(--secondary-color), #5dade2);
             transition: all ease 0.3s;
         }
-        .button-1:hover{
+
+        .button-1:hover {
             transform: translateY(-3px);
         }
 
@@ -320,8 +323,9 @@
             margin-top: 1rem;
 
         }
-        .start-now{
-            color:white
+
+        .start-now {
+            color: white
         }
 
         .icons i {
@@ -361,7 +365,7 @@
 
             <!------box 1-------->
             <div class="box-2 one">
-                <h1>80.8%</h1>
+                <h1>82.4%</h1>
                 <p>Average Model Performance</p>
             </div>
 
@@ -379,7 +383,7 @@
 
             <!------box 4-------->
             <div class="box-2 four">
-                <h1>2</h1>
+                <h1>3</h1>
                 <p>ML Models</p>
             </div>
         </div>
@@ -390,14 +394,15 @@
             <div class="box-3">
                 <div><i class="fa-solid fa-brain"></i></div>
                 <h2>AI-Powered Predictions</h2>
-                <p>Advanced ensemble of Random Forest, LSTM, and XGBoost models trained on historical Delhi electricity
-                    demand data.</p>
+                <p>Advanced weighted ensemble of XGBoost, LightGBM, and Ridge Regression models optimized for
+                    high-accuracy electricity demand forecasting.</p>
+
                 <ul>
-                    <!-- <li><i class="fa-solid fa-check tick"></i> Random Forest Regresson</li> -->
-                    <li><i class="fa-solid fa-check tick"></i> LSTM Neural Network</li>
-                    <li><i class="fa-solid fa-check tick"></i> XGBoost Algorithm</li>
-                    <li><i class="fa-solid fa-check tick"></i> Ensemble Averaging</li>
-                     <li><i class="fa-solid fa-check tick"></i> Time-Series + Weather Features</li>
+                    <li><i class="fa-solid fa-check tick"></i> XGBoost Regressor</li>
+                    <li><i class="fa-solid fa-check tick"></i> LightGBM Regressor</li>
+                    <li><i class="fa-solid fa-check tick"></i> Ridge Regression</li>
+                    <li><i class="fa-solid fa-check tick"></i> Weighted Ensemble (0.45 / 0.45 / 0.10)</li>
+                    <li><i class="fa-solid fa-check tick"></i> Advanced Feature Engineering (29 Features)</li>
                 </ul>
             </div>
 
@@ -487,11 +492,11 @@
 
         </div>
     </footer>
-<script>
-if (window.history.replaceState) {
-    window.history.replaceState(null, null, window.location.href);
-}
-</script>
+    <script>
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
 </body>
 
 

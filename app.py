@@ -2,19 +2,18 @@
 app.py
 ======
 PowerPulse — Flask Application Entry Point
-XGBoost + LSTM electricity demand forecasting for Delhi regions.
+XGBoost + LightGBM + Ridge electricity demand forecasting
 """
 
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'   # 🔕 TensorFlow logs off
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'   # (optional now, safe to keep)
 
-from flask import (Flask, render_template, request, jsonify,
-                   flash, redirect, url_for, session)
+from flask import Flask, render_template, request, jsonify, flash, redirect, url_for, session
 from datetime import datetime
 
-from utils.ml_predictor   import MLPredictor
+from utils.ml_predictor import MLPredictor
 from utils.weather_service import WeatherService
-from utils.data_processor  import DataProcessor
+from utils.data_processor import DataProcessor
 
 
 # ── App initialisation ──────────────────────────────────────────
@@ -23,12 +22,15 @@ app.config['SECRET_KEY'] = 'powerpulse-secret-2024'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
-# ── Load services ONLY ONCE (IMPORTANT FIX) ──────────────────────
+# ── Load services ONLY ONCE ─────────────────────────────────────
 print("🚀 Loading models and services...")
 
 ml_predictor    = MLPredictor(model_dir='saved_models')
 weather_service = WeatherService()
 data_processor  = DataProcessor()
+
+if not ml_predictor.models:
+    raise Exception("❌ Models not loaded properly!")
 
 print("✅ All services loaded successfully!")
 
@@ -72,37 +74,33 @@ def logout():
 def map():
     return render_template('map.html')
 
-from flask import session
-from flask import session
 
 # ── Forecast ─────────────────────────────────────────────────────
 @app.route('/forecast', methods=['GET', 'POST'])
 def forecast():
 
-    predictions            = []
+    predictions = []
     peak_least_demand_info = []
-    plot_filename          = None
+    plot_filename = None
 
-    # 🔥 STEP 1: POST → ONLY SAVE + REDIRECT
+    # 🔥 STEP 1: POST → SAVE + REDIRECT
     if request.method == 'POST':
         selected_regions = request.form.getlist('region')
-        selected_date    = request.form.get('date')
+        selected_date = request.form.get('date')
 
         if not selected_regions:
             flash('Please select at least one region.', 'warning')
             return redirect(url_for('forecast'))
 
-        # ✅ Save user input
         session['selected_regions'] = selected_regions
-        session['selected_date']    = selected_date
+        session['selected_date'] = selected_date
 
-        return redirect(url_for('forecast'))   # 🔥 MUST
+        return redirect(url_for('forecast'))
 
-    # 🔥 STEP 2: GET → FULL LOGIC
+    # 🔥 STEP 2: GET → PROCESS
     selected_regions = session.get('selected_regions')
-    selected_date    = session.get('selected_date')
+    selected_date = session.get('selected_date')
 
-    # 👉 Agar data hai tabhi run karo
     if selected_regions and selected_date:
         try:
             date_obj = datetime.strptime(selected_date, '%Y-%m-%d')
@@ -120,7 +118,7 @@ def forecast():
 
             hourly_predictions = {r: [] for r in selected_regions}
 
-            print("⚡ Running predictions...")
+            print(f"⚡ Running predictions for {selected_regions}...")
 
             for _, row in weather_data.iterrows():
                 hour = int(row['hour'])
@@ -128,26 +126,27 @@ def forecast():
                 for region in selected_regions:
                     try:
                         pred = ml_predictor.predict(
-                            region               = region,
-                            date_obj             = date_obj,
-                            hour                 = hour,
-                            minute               = 0,
-                            temperature          = float(row['temperature_2m']),
-                            apparent_temperature = float(row['apparent_temperature']),
-                            humidity             = float(row['relative_humidity_2m']),
-                            wind_speed           = float(row['wind_speed_10m']),
-                            precipitation        = float(row.get('precipitation', 0.0)),
-                            cloud_total          = float(row.get('cloud_cover', 50.0)),
-                            cloud_low            = float(row.get('cloud_cover_low', 20.0)),
-                            cloud_mid            = float(row.get('cloud_cover_mid', 15.0)),
-                            cloud_high           = float(row.get('cloud_cover_high', 10.0)),
+                            region=region,
+                            date_obj=date_obj,
+                            hour=hour,
+                            minute=0,
+                            temperature=float(row['temperature_2m']),
+                            apparent_temperature=float(row['apparent_temperature']),
+                            humidity=float(row['relative_humidity_2m']),
+                            wind_speed=float(row['wind_speed_10m']),
+                            precipitation=float(row.get('precipitation', 0.0)),
+                            cloud_total=float(row.get('cloud_cover', 50.0)),
+                            cloud_low=float(row.get('cloud_cover_low', 20.0)),
+                            cloud_mid=float(row.get('cloud_cover_mid', 15.0)),
+                            cloud_high=float(row.get('cloud_cover_high', 10.0)),
                         )
 
                         hourly_predictions[region].append({
                             'hour': hour,
                             'predicted_demand': pred['ensemble'],
                             'xgb': pred['xgb'],
-                            'lstm': pred['lstm'],
+                            'lgb': pred['lgb'],
+                            'ridge': pred['ridge'],
                             'confidence': pred['confidence'],
                         })
 
@@ -157,7 +156,8 @@ def forecast():
                             'hour': hour,
                             'predicted_demand': 0,
                             'xgb': 0,
-                            'lstm': 0,
+                            'lgb': 0,
+                            'ridge': 0,
                             'confidence': 0.5,
                         })
 
@@ -175,13 +175,15 @@ def forecast():
                 items = hourly_predictions[region]
                 demands = [x['predicted_demand'] for x in items]
 
-                peak_d   = max(demands)
-                least_d  = min(demands)
-                peak_hr  = items[demands.index(peak_d)]['hour']
+                peak_d = max(demands)
+                least_d = min(demands)
+
+                peak_hr = items[demands.index(peak_d)]['hour']
                 least_hr = items[demands.index(least_d)]['hour']
 
                 avg_conf = round(
-                    sum(x['confidence'] for x in items) / len(items) * 100, 1)
+                    sum(x['confidence'] for x in items) / len(items) * 100, 1
+                )
 
                 peak_least_demand_info.append({
                     'region': region,
@@ -202,7 +204,6 @@ def forecast():
             print(f'🔥 Forecast error: {e}')
             flash('Something went wrong.', 'error')
 
-    # 🔥 FINAL RENDER (ONLY GET)
     return render_template(
         'forecast.html',
         predictions=predictions,
@@ -213,14 +214,14 @@ def forecast():
         regions=REGIONS,
     )
 
+
 # ── API ─────────────────────────────────────────────────────────
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
     try:
         data = request.get_json()
 
-        date_obj = datetime.strptime(
-            data.get('date'), '%Y-%m-%d')
+        date_obj = datetime.strptime(data.get('date'), '%Y-%m-%d')
 
         pred = ml_predictor.predict(
             region=data['region'],
@@ -233,13 +234,22 @@ def api_predict():
             wind_speed=float(data['wind_speed']),
         )
 
-        return jsonify({'success': True, 'prediction': pred})
+        return jsonify({
+            'success': True,
+            'prediction': {
+                'ensemble': pred['ensemble'],
+                'xgb': pred['xgb'],
+                'lgb': pred['lgb'],
+                'ridge': pred['ridge'],
+                'confidence': pred['confidence']
+            }
+        })
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 400
 
 
-# 🔥 YAHAN ADD KARNA HAI
+# ── Cache Fix ───────────────────────────────────────────────────
 @app.after_request
 def add_header(response):
     response.cache_control.no_store = True
@@ -247,17 +257,18 @@ def add_header(response):
     response.cache_control.must_revalidate = True
     response.cache_control.max_age = 0
     return response
+
+
 # ════════════════════════════════════════════════════════════════
-# RUN (FINAL FIX)
+# RUN
 # ════════════════════════════════════════════════════════════════
 
 if __name__ == '__main__':
     os.makedirs('static', exist_ok=True)
 
-    # 🔥 MOST IMPORTANT FIX
     app.run(
         host='0.0.0.0',
         port=5000,
         debug=True,
-        use_reloader=False   # ❌ STOP AUTO RESTART
+        use_reloader=False
     )
