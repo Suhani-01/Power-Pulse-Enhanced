@@ -52,7 +52,7 @@ class WeatherService:
             }
 
             resp = requests.get(self.API_URL, params=params,
-                                timeout=self.TIMEOUT)
+                                timeout=30)
 
             if resp.status_code == 200:
                 h = resp.json()['hourly']
