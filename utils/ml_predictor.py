@@ -30,20 +30,37 @@ class MLPredictor:
     def __init__(self, model_dir='saved_models'):
         self.model_dir = model_dir
         self.regions   = ['DELHI', 'BRPL', 'BYPL', 'NDPL', 'NDMC', 'MES']
-        self.models    = {}
-        self._load_all()
+        self.models    = {}          # ✅ Lazy: load only when needed
+        self._verify_files()         # Just check files exist at startup
 
-    def _load_all(self):
+    def _verify_files(self):
+        """Only verify files exist — don't load into RAM at startup."""
         for region in self.regions:
-            try:
-                self.models[region] = {
-                    'xgb':   joblib.load(os.path.join(self.model_dir, f'xgb_{region}.pkl')),
-                    'lgb':   joblib.load(os.path.join(self.model_dir, f'lgb_{region}.pkl')),
-                    'ridge': joblib.load(os.path.join(self.model_dir, f'ridge_{region}.pkl')),
-                }
+            xgb_path   = os.path.join(self.model_dir, f'xgb_{region}.pkl')
+            lgb_path   = os.path.join(self.model_dir, f'lgb_{region}.pkl')
+            ridge_path = os.path.join(self.model_dir, f'ridge_{region}.pkl')
+
+            if all(os.path.exists(p) for p in [xgb_path, lgb_path, ridge_path]):
+                self.models[region] = None   # Mark as available but not loaded
                 print(f'Loaded models: {region}')
-            except Exception as e:
-                print(f'Error loading models for {region}: {e}')
+            else:
+                print(f'⚠️ Missing model files for {region}')
+
+    def _load_region(self, region):
+        """Load a single region's models into RAM only when needed."""
+        if self.models.get(region) is not None:
+            return  # Already loaded
+
+        try:
+            self.models[region] = {
+                'xgb':   joblib.load(os.path.join(self.model_dir, f'xgb_{region}.pkl')),
+                'lgb':   joblib.load(os.path.join(self.model_dir, f'lgb_{region}.pkl')),
+                'ridge': joblib.load(os.path.join(self.model_dir, f'ridge_{region}.pkl')),
+            }
+            print(f'✅ Lazily loaded models for {region}')
+        except Exception as e:
+            print(f'❌ Error loading models for {region}: {e}')
+            self.models[region] = None
 
     @staticmethod
     def _season(month):
@@ -95,9 +112,14 @@ class MLPredictor:
 
         try:
             if region not in self.models:
-                raise ValueError(f'Models not loaded for region: {region}')
+                raise ValueError(f'Models not available for region: {region}')
 
-            # 🔥 FIX: Convert to DataFrame with feature names
+            # ✅ Lazy load — only load this region if not already in RAM
+            self._load_region(region)
+
+            if self.models[region] is None:
+                raise ValueError(f'Failed to load models for region: {region}')
+
             X_array = self.build_feature_vector(
                 date_obj=date_obj, hour=hour, minute=minute,
                 temperature=temperature, apparent_temperature=apparent_temperature,
@@ -136,27 +158,20 @@ class MLPredictor:
             print(f'Prediction error [{region}]: {e}')
             fb = self._fallback(temperature, hour, date_obj.month)
             return {
-                'xgb': fb,
-                'lgb': fb,
-                'ridge': fb,
-                'ensemble': fb,
-                'confidence': 0.5
+                'xgb': fb, 'lgb': fb, 'ridge': fb,
+                'ensemble': fb, 'confidence': 0.5
             }
 
     def predict_all_regions(self, date_obj, hour, minute,
                             temperature, apparent_temperature,
                             humidity, wind_speed, **kwargs):
-
         return {
             r: self.predict(
-                region=r,
-                date_obj=date_obj,
-                hour=hour,
-                minute=minute,
+                region=r, date_obj=date_obj,
+                hour=hour, minute=minute,
                 temperature=temperature,
                 apparent_temperature=apparent_temperature,
-                humidity=humidity,
-                wind_speed=wind_speed,
+                humidity=humidity, wind_speed=wind_speed,
                 **kwargs
             )['ensemble']
             for r in self.regions
@@ -165,20 +180,10 @@ class MLPredictor:
     @staticmethod
     def _fallback(temperature, hour, month):
         base = 2500
-
-        if month in [6,7,8]:
-            base += 1500
-        elif month in [12,1,2]:
-            base -= 600
-
-        if temperature > 38:
-            base += int((temperature-38)*80)
-        elif temperature < 12:
-            base += int((12-temperature)*50)
-
-        if 0 <= hour < 5:
-            base -= 800
-        elif 14 <= hour < 21:
-            base += 500
-
+        if month in [6,7,8]:   base += 1500
+        elif month in [12,1,2]: base -= 600
+        if temperature > 38:   base += int((temperature-38)*80)
+        elif temperature < 12: base += int((12-temperature)*50)
+        if 0 <= hour < 5:      base -= 800
+        elif 14 <= hour < 21:  base += 500
         return max(500, base)
