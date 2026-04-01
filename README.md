@@ -111,7 +111,7 @@ pip install -r requirements.txt
 python setup_database.py
 
 # Run the application
-python run.py
+python wsgi.py
 ```
 
 ### Docker Setup
