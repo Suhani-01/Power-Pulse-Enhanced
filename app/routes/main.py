@@ -46,12 +46,14 @@ def forecast():
             date_obj = datetime.strptime(selected_date, '%Y-%m-%d')
             
             # Get weather forecast data using your existing logic
+            print("Fetching weather data ........")
             weather_data = weather_service.fetch_weather_forecast(date_obj)
             
             if weather_data is not None:
                 hourly_predictions = {region: [] for region in selected_regions}
                 
                 # Process each hour using your existing prediction logic
+                print("Processing Each hour and calculation prediction for Selected date and region.....")
                 for index, row in weather_data.iterrows():
                     temperature = row['temperature_2m']
                     humidity = row['relative_humidity_2m']
@@ -61,6 +63,8 @@ def forecast():
                     for region in selected_regions:
                         try:
                             # Use your trained models for prediction
+                            print(f" Calculating for region -----> {region}")
+
                             predicted_demand = ml_predictor.predict(
                                 region=region,
                                 temperature=temperature,
@@ -95,7 +99,9 @@ def forecast():
                     predictions.append(row)
                 
                 # Calculate peak and least demand info (your existing logic)
+
                 for region in selected_regions:
+                    print(f"Looking what's the peak and least demand of region ----> {region}")
                     if hourly_predictions[region]:
                         demands = [item['predicted_demand'] for item in hourly_predictions[region]]
                         peak_demand = max(demands)
@@ -112,12 +118,14 @@ def forecast():
                         })
                 
                 # Generate enhanced plot
+                print("Generation the plot .....")
                 plot_filename = data_processor.create_enhanced_plot(hourly_predictions, selected_regions, selected_date)
                 
                 flash(f'Predictions generated successfully for {len(selected_regions)} regions!', 'success')
                 
             else:
-                flash('Unable to fetch weather data. Please try again.', 'error')
+                print("Error Fetching weather data ....")
+                flash('Unable to fetch weather data. Please try again......', 'error')
                 
         except Exception as e:
             print(f"Error processing forecast request: {e}")

@@ -79,6 +79,7 @@ def map():
 @app.route('/forecast', methods=['GET', 'POST'])
 def forecast():
 
+    print(" Forecasting .....")
     predictions = []
     peak_least_demand_info = []
     plot_filename = None
@@ -87,6 +88,8 @@ def forecast():
     if request.method == 'POST':
         selected_regions = request.form.getlist('region')
         selected_date = request.form.get('date')
+
+        print(f" Selected region : {selected_regions} and selected date : {selected_date}\n")
 
         if not selected_regions:
             flash('Please select at least one region.', 'warning')
