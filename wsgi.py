@@ -6,11 +6,13 @@ XGBoost + LightGBM + Ridge electricity demand forecasting
 """
 
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'   # (optional now, safe to keep)
+# Suppress TensorFlow logging to keep the console clean
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  
 
 from flask import Flask, render_template, request, jsonify, flash, redirect, url_for, session
 from datetime import datetime
 
+# Import custom utility modules for ML, Weather, and Data Processing
 from utils.ml_predictor import MLPredictor
 from utils.weather_service import WeatherService
 from utils.data_processor import DataProcessor
@@ -19,10 +21,12 @@ from utils.data_processor import DataProcessor
 # ── App initialisation ──────────────────────────────────────────
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'powerpulse-secret-2024'
+# Disable browser caching for development/testing accuracy
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 
 # ── Load services ONLY ONCE ─────────────────────────────────────
+# We initialize services globally so they persist across requests
 print("🚀 Loading models and services...")
 
 ml_predictor    = MLPredictor(model_dir='saved_models')
@@ -35,6 +39,7 @@ if not ml_predictor.models:
 print("✅ All services loaded successfully!")
 
 
+# List of valid electricity distribution regions in Delhi
 REGIONS = ['DELHI', 'BRPL', 'BYPL', 'NDPL', 'NDMC', 'MES']
 
 
@@ -44,15 +49,18 @@ REGIONS = ['DELHI', 'BRPL', 'BYPL', 'NDPL', 'NDMC', 'MES']
 
 @app.route('/')
 def index():
+    """Renders the landing page."""
     return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Simple session-based login logic."""
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
 
+        # Basic hardcoded credentials check
         if username == 'user' and password == 'password':
             session['logged_in'] = True
             flash('Welcome to the Forecast Dashboard!', 'success')
@@ -66,25 +74,31 @@ def login():
 
 @app.route('/logout')
 def logout():
+    """Clears user session and redirects to home."""
     session.clear()
     return redirect(url_for('index'))
 
 
 @app.route('/map')
 def map():
+    """Renders the regional map view."""
     return render_template('map.html')
 
 
 # ── Forecast ─────────────────────────────────────────────────────
 @app.route('/forecast', methods=['GET', 'POST'])
 def forecast():
-
+    """
+    Main Forecast Logic:
+    1. POST: Captures user selections (regions/date) and stores them in session.
+    2. GET: Fetches weather, runs ML predictions for 24 hours, and renders results.
+    """
     print(" Forecasting .....")
     predictions = []
     peak_least_demand_info = []
     plot_filename = None
 
-    # 🔥 STEP 1: POST → SAVE + REDIRECT
+    # 🔥 STEP 1: POST → Save selections and redirect to prevent double-submit
     if request.method == 'POST':
         selected_regions = request.form.getlist('region')
         selected_date = request.form.get('date')
@@ -100,7 +114,7 @@ def forecast():
 
         return redirect(url_for('forecast'))
 
-    # 🔥 STEP 2: GET → PROCESS
+    # 🔥 STEP 2: GET → Retrieve from session and process data
     selected_regions = session.get('selected_regions')
     selected_date = session.get('selected_date')
 
@@ -108,6 +122,7 @@ def forecast():
         try:
             date_obj = datetime.strptime(selected_date, '%Y-%m-%d')
 
+            # Fetch weather data for the selected date
             print(f"📡 Fetching weather for {selected_date}...")
             weather_data = weather_service.fetch_weather_forecast(date_obj)
 
@@ -121,13 +136,14 @@ def forecast():
 
             hourly_predictions = {r: [] for r in selected_regions}
 
+            # Loop through 24 hours of weather data and predict for each region
             print(f"⚡ Running predictions for {selected_regions}...")
-
             for _, row in weather_data.iterrows():
                 hour = int(row['hour'])
 
                 for region in selected_regions:
                     try:
+                        # Call the ML predictor with weather features
                         pred = ml_predictor.predict(
                             region=region,
                             date_obj=date_obj,
@@ -155,16 +171,12 @@ def forecast():
 
                     except Exception as e:
                         print(f'❌ Error [{region} H{hour}]: {e}')
+                        # Fallback row if a specific hour fails
                         hourly_predictions[region].append({
-                            'hour': hour,
-                            'predicted_demand': 0,
-                            'xgb': 0,
-                            'lgb': 0,
-                            'ridge': 0,
-                            'confidence': 0.5,
+                            'hour': hour, 'predicted_demand': 0, 'confidence': 0.5
                         })
 
-            # ── Table ──
+            # Format data for the HTML Table
             for hour in range(24):
                 row_data = {'time': f'{hour:02d}:00'}
                 for region in selected_regions:
@@ -173,7 +185,7 @@ def forecast():
                     )
                 predictions.append(row_data)
 
-            # ── Peak / Least ──
+            # Calculate Highs (Peak) and Lows (Least) for the dashboard summary
             for region in selected_regions:
                 items = hourly_predictions[region]
                 demands = [x['predicted_demand'] for x in items]
@@ -197,6 +209,7 @@ def forecast():
                     'confidence': avg_conf,
                 })
 
+            # Generate and save a Matplotlib/Seaborn visualization
             plot_filename = data_processor.create_enhanced_plot(
                 hourly_predictions, selected_regions, selected_date
             )
@@ -221,9 +234,9 @@ def forecast():
 # ── API ─────────────────────────────────────────────────────────
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
+    """JSON API endpoint for single-point external predictions."""
     try:
         data = request.get_json()
-
         date_obj = datetime.strptime(data.get('date'), '%Y-%m-%d')
 
         pred = ml_predictor.predict(
@@ -239,13 +252,7 @@ def api_predict():
 
         return jsonify({
             'success': True,
-            'prediction': {
-                'ensemble': pred['ensemble'],
-                'xgb': pred['xgb'],
-                'lgb': pred['lgb'],
-                'ridge': pred['ridge'],
-                'confidence': pred['confidence']
-            }
+            'prediction': pred
         })
 
     except Exception as e:
@@ -255,6 +262,7 @@ def api_predict():
 # ── Cache Fix ───────────────────────────────────────────────────
 @app.after_request
 def add_header(response):
+    """Force browsers to always fetch the latest results/plots."""
     response.cache_control.no_store = True
     response.cache_control.no_cache = True
     response.cache_control.must_revalidate = True
@@ -267,11 +275,12 @@ def add_header(response):
 # ════════════════════════════════════════════════════════════════
 
 if __name__ == '__main__':
+    # Ensure static directory exists for plot storage
     os.makedirs('static', exist_ok=True)
 
     app.run(
         host='0.0.0.0',
         port=5000,
         debug=True,
-        use_reloader=False
+        use_reloader=False  # Re-loader disabled to prevent duplicate model loading
     )
