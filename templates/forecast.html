@@ -4,368 +4,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forecast</title>
+    <title>Forecast | PowerPulse Enhanced</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
+        /* --- Setup & Variables --- */
         * {
             box-sizing: border-box;
-            list-style: none;
             margin: 0;
             padding: 0;
-            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --bs-nav-link-color: rgba(0, 0, 0, 0.65);
-            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        a {
-            text-decoration: none;
+            --bg-dark: #0b0f19;
+            --card-bg: #161b2a;
+            --accent-blue: #00d2ff;
+            --accent-purple: #9d50bb;
+            --text-bright: #ffffff;
+            --text-dim: #94a3b8;
+            --gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            background-color: var(--primary-color);
+            background-color: var(--bg-dark);
+            color: var(--text-bright);
+            line-height: 1.6;
         }
 
+        a { text-decoration: none; transition: 0.3s ease; cursor: pointer;}
+        li { list-style: none; }
+
+        /* --- Header --- */
         header {
             width: 100%;
             position: fixed;
+            top: 0;
             z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1.2rem 0;
         }
-
-        header div {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 10px;
-        }
-
-        header h2 {
-            color: var(--primary-color);
-        }
-
-        nav ul {
-            display: flex;
-            gap: 1.23rem;
-            list-style: none;
-
-        }
-
-        nav ul a {
-            color: var(--bs-nav-link-color);
-            transition: all ease 0.2s;
-        }
-
-        nav ul a:hover {
-            color: black;
-        }
-
 
         .window {
-            max-width: 1290px;
-            width: 100%;
-            margin-inline: auto;
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
         }
 
+        header .window {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+        }
+
+        nav ul { display: flex; gap: 2rem; }
+        nav ul a { color: var(--text-dim); font-weight: 500; font-size: 0.9rem; }
+        nav ul a:hover { color: var(--accent-blue); }
+
+        /* --- Main Layout --- */
         main {
-            background: var(--gradient-bg);
-            padding-top: 100px;
-            padding-bottom: 30px;
+            padding: 120px 0 60px;
+            background: radial-gradient(circle at top right, rgba(0, 210, 255, 0.05), transparent);
         }
 
+        /* --- Form Container --- */
         .container {
-            background-color: rgba(255, 255, 255, 0.922);
-            border-radius: 1rem;
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 3rem;
         }
 
-        .button-1 {
-            margin-top: 10px;
-            border: none;
-            cursor: pointer;
-            color: white;
-            padding: 10px 30px;
-            font-size: 1.3rem;
-            border-radius: 2rem;
-            background: linear-gradient(45deg, var(--secondary-color), #5dade2);
-            transition: all ease 0.3s;
-        }
+        .prediction-form-heading { margin-bottom: 1.5rem; }
+        .prediction-form-heading h2 { color: var(--accent-blue); margin-bottom: 5px; }
+        .prediction-form-heading p { color: var(--text-dim); font-size: 0.9rem; }
 
-        .button-1:hover {
-            transform: translateY(-3px);
-        }
-
-        .prediction-form-heading {
-            padding: 7px 20px;
-        }
-
-        .prediction-form-heading h2 {
-            font-weight: 500;
-        }
+        hr { border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0; }
 
         .form-to-fill {
-            display: flex;
-            width: 100%;
-            justify-content: space-between;
-            gap: 1rem;
-            height: 350px;
-
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
         }
 
-
-        .form-to-fill>div {
-            width: 50%;
-        }
-
-        .first-half {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-        }
-
-        .date-input {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
+        .first-half { display: flex; flex-direction: column; justify-content: space-between; }
+        
+        .date-input { display: flex; flex-direction: column; gap: 0.8rem; }
+        .date-input label { font-size: 0.9rem; color: var(--text-dim); }
         .date-input input {
-            border: 1px solid rgba(157, 157, 157, 0.404);
-            background-color: white;
-            padding: 15px;
-            border-radius: 10px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .form-buttons { display: flex; gap: 1rem; margin-top: 2rem; }
+        .button-1 {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            font-weight: 600;
             cursor: pointer;
-
-
-        }
-
-        .second-half {
+            text-align: center;
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
         }
+        .button-1:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2); }
 
+        /* --- Region Selection --- */
+        .region-heading { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 10px; display: block; }
         .region-options {
-            padding: 10px 10px;
-            margin: 10px 0px;
-            overflow-y: scroll;
-            height: 70%;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .region-heading {
-            margin-top: 20px;
+            height: 250px;
+            overflow-y: auto;
+            background: var(--glass);
+            border-radius: 12px;
+            padding: 10px;
+            border: 1px solid var(--border);
         }
 
         .select-region {
             display: flex;
-            gap: 1rem;
-            padding: 10px;
             align-items: center;
-            background: rgba(52, 152, 219, 0.1);
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.02);
             border-radius: 10px;
             cursor: pointer;
-
+            transition: 0.2s;
         }
+        .select-region:hover { background: rgba(0, 210, 255, 0.1); }
+        .select-region h4 { font-size: 0.95rem; color: var(--accent-blue); }
+        .select-region p { font-size: 0.8rem; color: var(--text-dim); }
 
-        .select-region p {
-            font-size: 0.8rem;
-        }
-
-        .form-buttons{
-            display: flex;
-            flex-direction: row;
-            gap: 1rem;
-        }
-        .form-buttons button{
-            flex: 1;
-        }
-
-
+        /* --- Prediction Results --- */
         .predictions {
-            margin: 2rem auto 0rem;
-            border-radius: 1rem;
-            background-color: rgba(255, 255, 255, 0.922);
-
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid var(--border);
         }
-
-        .predictions>h2 {
-            padding: 10px 20px;
-            font-weight: 500;
-            font-size: 1.3rem;
-        }
+        .predictions h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
 
         .card-s {
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            color: white;
-            padding: 20px;
-            gap: 1rem;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
         }
 
         .card {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            align-items: center;
-            border-radius: 1rem;
-            padding: 20px 20px 30px 20px;
-            width: 400px;
-            transition: all ease 0.3s;
-            background: linear-gradient(45deg, var(--secondary-color), #5dade2);
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            font-weight: 500;
-            font-size: 1rem;
-        }
-
-        .card h2 {
-            margin-bottom: 10px;
-        }
-
-        .peak-least-demand {
-            width: 100%;
-            display: flex;
-            gap: 1rem;
-            justify-content: space-evenly;
-        }
-
-        .peak-least-demand>div {
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.1), rgba(58, 123, 213, 0.1));
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            border-radius: 20px;
+            padding: 20px;
             text-align: center;
+            transition: 0.3s;
         }
+        .card:hover { transform: translateY(-5px); background: rgba(0, 210, 255, 0.15); }
+        .card h3 { color: var(--accent-blue); font-size: 1.2rem; margin-bottom: 15px; }
+        
+        .peak-least-demand { display: flex; justify-content: space-around; }
+        .peak-least-demand h2 { font-size: 1.8rem; color: white; }
+        .peak-least-demand p { font-size: 0.8rem; color: var(--text-dim); }
 
+        /* --- Visualization --- */
+        .plot {
+            background: rgba(255,255,255,0.02);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 3rem;
+            border: 1px solid var(--border);
+        }
+        .plot img { border-radius: 10px; max-width: 100%; height: auto; }
 
-
+        /* --- Table --- */
         table {
-            box-shadow: 0 0 10px rgba(146, 146, 146, 0.521);
+            width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            margin-bottom: 20px;
-            margin-inline: auto;
-            width: 97%;
-            border-radius: 1rem;
             overflow: hidden;
-            transition: all ease 0.3s;
+            border-radius: 15px;
         }
-
-        table:hover {
-            transform: translateY(-4px);
-        }
-
-
-        td {
-            border-bottom: 1px solid rgba(189, 189, 189, 0.312);
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background: #2c3e50;
-            color: white;
-            border-collapse: collapse;
-            padding: 10px;
-        }
-
-        tr:hover {
-            background-color: rgba(209, 209, 209, 0.403);
-        }
-
+        th { background: rgba(0, 210, 255, 0.1); color: var(--accent-blue); padding: 15px; font-size: 0.9rem; text-align: left; }
+        td { padding: 12px 15px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+        
         .reading {
-            width: fit-content;
-            border-radius: 5px;
-            padding: 2px;
-            margin-inline: auto;
-            font-size: 0.9rem;
-            color: white;
-            background-color: var(--secondary-color);
+            background: var(--gradient);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 0.85rem;
         }
 
-        .time,
-        .time-data {
-            text-align: start;
-        }
+        /* --- Footer --- */
+        footer { background: #05070a; padding: 4rem 0 2rem; border-top: 1px solid var(--border); }
+        .foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
+        .foot h2 { color: var(--accent-blue); }
+        .icons { display: flex; gap: 1.5rem; }
+        .icons a { color: var(--text-dim); font-size: 1.2rem; }
 
-        .plot {
-            text-align: center;
-            margin-top: 30px;
-            margin-inline: 20px;
-            background-color: white;
-            border-radius: 1rem;
-            padding: 20px 10px;
-        }
-
-        .plot h3 {
-            font-weight: 500;
-            color: var(--primary-color);
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-        }
-
-        a{
-            cursor: pointer;
-        }
-
-
-
-        footer {
-            background-color: var(--primary-color);
-        }
-
-        .foot {
-            display: flex;
-            justify-content: space-between;
-            padding: 40px 0px;
-            color: white;
-        }
-
-        .foot h2 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-
-        .icons {
-            display: flex;
-            justify-content: end;
-            gap: 1rem;
-            margin-top: 1rem;
-
-        }
-
-        .icons i {
-            color: white;
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 850px) {
+            .form-to-fill { grid-template-columns: 1fr; }
+            .card-s { grid-template-columns: 1fr; } 
         }
     </style>
 </head>
 
 <body>
-    <!--------Header Section-------->
     <header>
         <div class="window">
-            <h2><i class="fa-solid fa-bolt"></i> PowerPulse Enhanced</h2>
+            <div class="logo"><i class="fa-solid fa-bolt"></i> PowerPulse</div>
             <nav>
                 <ul>
                     <li><a href="{{ url_for('map') }}"><i class="fas fa-map-marked-alt"></i> Map</a></li>
-                    <li><a href="#"><i class="fa-solid fa-chart-line"></i> Forecast</a></li>
-                    <li><a class="log-out"><i class="fa-solid fa-right-from-bracket log-out"></i> Log Out</a></li>
+                    <li><a class="log-out"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a></li>
                 </ul>
             </nav>
         </div>
@@ -374,89 +250,50 @@
     <main>
         <div class="container window">
             <div class="prediction-form-heading">
-                <h2><i class="fa-solid fa-chart-line"></i> Electricity Demand Forecast</h2>
-                <p>Select date and regions to generate AI-powered demand predictions</p>
+                <h2><i class="fa-solid fa-chart-line"></i> Demand Forecast</h2>
+                
             </div>
 
             <hr>
 
             <form class="form-to-fill" method="POST" action="/forecast">
-
                 <div class="first-half">
                     <div class="date-input">
-                        <label for="date"><i class="fas fa-calendar-alt"></i> Select Date </label>
-                        <input type="date" id="date" name="date" value="{{ selected_date or '' }}">
+                        <label for="date"><i class="fas fa-calendar-alt"></i> Target Date</label>
+                        <input type="date" id="date" name="date" >
                     </div>
-
 
                     <div class="form-buttons">
-                        <a href="{{ url_for('map') }}" class="button-1"> <i class="fas fa-map-marked-alt"></i> Explore Regions
+                        <a href="{{ url_for('map') }}" class="button-1" style="background: var(--glass); border: 1px solid var(--accent-blue);">
+                            <i class="fas fa-map-marked-alt"></i> Map
                         </a>
-                        <button class="button-1 button-2" type="submit"><i class="fas fa-magic"></i> Generate Predicitons</button>
+                        <button class="button-1" type="submit">
+                            <i class="fas fa-magic"></i> Predict
+                        </button>
                     </div>
-                    
                 </div>
 
                 <div class="second-half">
-                    <label class="region-heading" for="region"><i class="fas fa-map-marked-alt"></i> Select
-                        Region(s)</label>
-
+                    <label class="region-heading"><i class="fas fa-layer-group"></i> Active Regions</label>
                     <div class="region-options">
+                        {% for code, name in [('DELHI','Overall Delhi'), ('BRPL','BSES Rajdhani'), ('BYPL','BSES Yamuna'), ('NDPL','North Delhi'), ('NDMC','New Delhi Council'), ('MES','Military Engineering')] %}
                         <label class="select-region">
-                            <input type="checkbox" name="region" value="DELHI">
+                            <input type="checkbox" name="region" value="{{code}}">
                             <div>
-                                <h4>DELHI</h4>
-                                <p>Overall Delhi</p>
+                                <h4>{{code}}</h4>
+                                <p>{{name}}</p>
                             </div>
                         </label>
-                        <label class="select-region">
-                            <input type="checkbox" name="region" value="BRPL">
-                            <div>
-                                <h4>BRPL</h4>
-                                <p>BSES Rajdhani Power Limited</p>
-                            </div>
-                        </label>
-                        <label class="select-region">
-                            <input type="checkbox" name="region" value="BYPL">
-                            <div>
-                                <h4>BYPL</h4>
-                                <p>BSES Yamuna Power Limited</p>
-                            </div>
-                        </label>
-                        <label class="select-region">
-                            <input type="checkbox" name="region" value="NDPL">
-                            <div>
-                                <h4>NDPL</h4>
-                                <p>North Delhi Power Limited</p>
-                            </div>
-                        </label>
-                        <label class="select-region">
-                            <input type="checkbox" name="region" value="NDMC">
-                            <div>
-                                <h4>NDMC</h4>
-                                <p>New Delhi Municipal Council</p>
-                            </div>
-                        </label>
-                        <label class="select-region">
-                            <input type="checkbox" name="region" value="MES">
-                            <div>
-                                <h4>MES</h4>
-                                <p>Military Engineering Services</p>
-                            </div>
-                        </label>
+                        {% endfor %}
                     </div>
                 </div>
-
             </form>
         </div>
 
+        {% if predictions %}
         <div class="window predictions">
-
-            {% if predictions %}
-            <h2><i class="fas fa-chart-bar"></i> Prediction Results for ({{ selected_date }})</h2>
-            <hr>
-
-            <!-------peak and least demand cards of different regions--->
+            <h2><i class="fas fa-poll-h"></i> Results for {{ selected_date }}</h2>
+            
             <div class="card-s">
                 {% for info in peak_least_demand_info %}
                 <div class="card">
@@ -465,88 +302,67 @@
                         <div>
                             <h2>{{info.peak_demand}}</h2>
                             <p>Peak MW</p>
-                            <p>at {{info.peak_hour}}</p>
+                            <p style="color:var(--accent-blue)">{{info.peak_hour}}</p>
                         </div>
-
-                        <div>
+                        <div style="border-left: 1px solid var(--border); padding-left: 20px;">
                             <h2>{{info.least_demand}}</h2>
-                            <p>Low MW</p>
-                            <p>at {{info.least_hour}}</p>
+                            <p>Min MW</p>
+                            <p style="color:var(--accent-blue)">{{info.least_hour}}</p>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
 
-
-            <!--------------Graph Plot--------->
             <div class="plot">
-                <h3><i class="fa-solid fa-chart-line"></i> Hourly Demand Visualization</h3>
-                <img src="{{ url_for('static', filename=plot_filename.split('/')[-1]) }}" alt="Forecast Plot"
-                    width="90%">
+                <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-microchip"></i> Prediction Graph </h3>
+                <img src="{{ url_for('static', filename=plot_filename.split('/')[-1]) }}" alt="Forecast Plot">
             </div>
 
-
-            <!--------Prediction Table-------->
             <table>
-                <tr>
-                    <th class="time"><i class="fas fa-clock"></i> Time</th>
-                    {% for region in selected_regions %}
-                    <th>{{ region }} (MW)</th>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-clock"></i> Time Window</th>
+                        {% for region in selected_regions %}
+                        <th>{{ region }} (MW)</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in predictions %}
+                    <tr>
+                        <td>{{ row.time }}</td>
+                        {% for region in selected_regions %}
+                        <td><span class="reading">{{ row[region] }}</span></td>
+                        {% endfor %}
+                    </tr>
                     {% endfor %}
-                </tr>
-                {% for row in predictions %}
-                <tr>
-                    <td class="time-data">{{ row.time }}</td>
-                    {% for region in selected_regions %}
-                    <td>
-                        <p class="reading">{{ row[region] }}</p>
-                    </td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
+                </tbody>
             </table>
- 
-
-
-
-
-            {% endif %}
         </div>
-
+        {% endif %}
     </main>
 
-    <!-----------Footer---------->
     <footer>
         <div class="window foot">
             <div>
-                <h2><i class="fa-solid fa-bolt"></i> PowerPulse Enhanced</h2>
-                <p>Advanced electricity demand forecasting with AI-powered predictions.</p>
+                <h2>PowerPulse</h2>
+                <p>AI-powered forecasting for Delhi energy demand..</p>
             </div>
-
-            <div class="end-section">
-                <p>© 2025 PowerPulse Enhanced. All rights reserved.</p>
-                <div class="icons">
-                    <a href="#"><i class="fa-brands fa-github"></i></a>
-                    <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-                    <a href="#"><i class="fa-solid fa-envelope"></i></a>
-                </div>
+            <div class="icons">
+                <a href="#"><i class="fa-brands fa-github"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+                <a href="#"><i class="fa-solid fa-envelope"></i></a>
             </div>
-
         </div>
     </footer>
 
-
+    <script>
+        document.querySelector('.log-out').addEventListener('click', () => {
+            if (confirm("Are you sure you want to log out of the forecasting system?")) {
+                window.location.href = "{{ url_for('logout') }}";  //it will clear the loggeed in session is session.clear()
+            }
+        });
+    </script>
 </body>
-<script>
-    let logOutButton=document.querySelector('.log-out');
-    logOutButton.addEventListener('click',()=>{
-        let result=confirm("Are you sure you want to exit?")
-        if(result){
-            // Redirect to home page (Flask route)
-            window.location.href = "{{ url_for('index') }}";
-        }
-    });
-</script>
-
 </html>

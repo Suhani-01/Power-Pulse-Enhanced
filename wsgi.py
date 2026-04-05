@@ -62,12 +62,10 @@ def login():
 
         # Basic hardcoded credentials check
         if username == 'user' and password == 'password':
-            session['logged_in'] = True
-            flash('Welcome to the Forecast Dashboard!', 'success')
+            session["isLoggedIn"]=True
             return redirect(url_for('forecast'))
 
-        flash('Invalid username or password', 'danger')
-        return redirect(url_for('login'))
+        return render_template('login.html',message='Invalid username or password')
 
     return render_template('login.html')
 
@@ -93,10 +91,15 @@ def forecast():
     1. POST: Captures user selections (regions/date) and stores them in session.
     2. GET: Fetches weather, runs ML predictions for 24 hours, and renders results.
     """
+    if not session.get('isLoggedIn'):
+       return render_template('login.html',message='You need to log in first')
+
     print(" Forecasting .....")
     predictions = []
     peak_least_demand_info = []
     plot_filename = None
+    selected_regions=[]
+    selected_date=None
 
     # 🔥 STEP 1: POST → Save selections and redirect to prevent double-submit
     if request.method == 'POST':
@@ -109,16 +112,6 @@ def forecast():
             flash('Please select at least one region.', 'warning')
             return redirect(url_for('forecast'))
 
-        session['selected_regions'] = selected_regions
-        session['selected_date'] = selected_date
-
-        return redirect(url_for('forecast'))
-
-    # 🔥 STEP 2: GET → Retrieve from session and process data
-    selected_regions = session.get('selected_regions')
-    selected_date = session.get('selected_date')
-
-    if selected_regions and selected_date:
         try:
             date_obj = datetime.strptime(selected_date, '%Y-%m-%d')
 
@@ -220,7 +213,7 @@ def forecast():
             print(f'🔥 Forecast error: {e}')
             flash('Something went wrong.', 'error')
 
-    return render_template(
+        return render_template(
         'forecast.html',
         predictions=predictions,
         peak_least_demand_info=peak_least_demand_info,
@@ -228,7 +221,12 @@ def forecast():
         selected_date=selected_date,
         selected_regions=selected_regions,
         regions=REGIONS,
-    )
+        )
+
+    return render_template('forecast.html')
+
+
+    
 
 
 # ── API ─────────────────────────────────────────────────────────

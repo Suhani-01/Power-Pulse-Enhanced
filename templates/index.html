@@ -4,500 +4,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>PowerPulse Enhanced | AI Forecasting</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        /* --- Setup & Variables --- */
         * {
             box-sizing: border-box;
-            list-style: none;
             margin: 0;
             padding: 0;
-            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --bs-nav-link-color: rgba(0, 0, 0, 0.65);
-            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-dark: #0b0f19;
+            --card-bg: #161b2a;
+            --accent-blue: #00d2ff;
+            --accent-purple: #9d50bb;
+            --text-bright: #ffffff;
+            --text-dim: #94a3b8;
+            --gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            --glass: rgba(255, 255, 255, 0.03);
         }
 
-        a {
-            text-decoration: none;
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-bright);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
+        a { text-decoration: none; transition: 0.3s ease; }
+        li { list-style: none; }
 
+        /* --- Reusable Container --- */
+        .window {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        /* --- Header & Nav --- */
         header {
             width: 100%;
             position: fixed;
+            top: 0;
             z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.2rem 0;
         }
 
-        header div {
+        header .window {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 15px 10px;
-        }
-
-        header h2 {
-            color: var(--primary-color);
-        }
-
-        nav ul {
-            display: flex;
-            gap: 1rem;
-            list-style: none;
-
-        }
-
-        nav ul a {
-            color: var(--bs-nav-link-color);
-            transition: all ease 0.2s;
-        }
-
-        nav ul a:hover {
-            color: black;
-        }
-
-
-        .window {
-            max-width: 1290px;
-            width: 100%;
-            margin-inline: auto;
-        }
-
-        main {
-            background: var(--gradient-bg);
-            padding-top: 100px;
-            padding-inline: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 1.7rem;
-            padding-bottom: 80px;
-
-        }
-
-        .box-container-1 {
-            background-color: white;
-            border-radius: 1rem;
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 3.5rem 0px;
-            gap: 1rem;
-            transition: all ease 0.3s;
-
-
         }
 
-        .box-container-1:hover {
-            transform: translateY(-6px);
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--accent-blue);
+        }
 
+        nav ul { display: flex; gap: 2rem; }
+        nav ul a { color: var(--text-dim); font-weight: 500; font-size: 0.9rem; }
+        nav ul a:hover { color: var(--accent-blue); }
+
+        /* --- Main Content Layout --- */
+        main {
+            padding: 140px 0 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 5rem;
+        }
+
+        /* --- Section 1: Hero --- */
+        .box-container-1 {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: radial-gradient(circle at center, rgba(0, 210, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .box-container-1 i.fa-chart-line {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent-blue);
+            filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.5));
         }
 
         .box-container-1 h1 {
-            font-weight: 300;
-            font-size: 3.5rem;
-        }
-
-        .box-container-1>div>i {
-            color: var(--secondary-color);
-            font-size: 3rem;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .main-para {
-            font-size: 1.25rem;
-            font-weight: 300;
-
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
         }
 
         .button-1 {
-            margin-top: 10px;
-            cursor: pointer;
+            display: inline-block;
+            background: var(--gradient);
             color: white;
-            padding: 10px 30px;
-            font-size: 1.3rem;
-            border-radius: 2rem;
-            background: linear-gradient(45deg, var(--secondary-color), #5dade2);
-            transition: all ease 0.3s;
+            padding: 14px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2);
         }
 
-        .button-1:hover {
-            transform: translateY(-3px);
-        }
+        .button-1:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(0, 210, 255, 0.4); }
 
+        /* --- Section 2: Statistics --- */
         .box-container-2 {
-            display: flex;
-            justify-content: space-between;
-
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
         }
 
         .box-2 {
-            width: 23.5%;
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            border-radius: 1rem;
-            padding: 40px 0px;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.4s;
         }
 
-        .box-2 h1 {
-            font-size: 2.5rem;
-        }
+        .box-2:hover { border-color: var(--accent-blue); transform: translateY(-5px); }
+        .box-2 h1 { font-size: 2.2rem; color: var(--accent-blue); margin-bottom: 5px; }
+        .box-2 p { color: var(--text-dim); font-size: 0.9rem; }
 
-        .box-2 p {
-            font-size: 15px;
-        }
-
-        /* .box-container-2:nth-child(1) {
-            background-color: green;
-        } */
-
-        .one {
-            background: linear-gradient(135deg, var(--success-color), #58d68d);
-            ;
-        }
-
-        .two {
-            background: linear-gradient(135deg, rgb(231, 76, 60), rgb(236, 112, 99));
-        }
-
-        .three {
-            background: linear-gradient(135deg, rgb(243, 156, 18), rgb(245, 176, 65));
-        }
-
-        .four {
-            background: linear-gradient(135deg, rgb(155, 89, 182), rgb(187, 143, 206));
-        }
-
+        /* --- Section 3: Features --- */
         .box-container-3 {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
         }
 
         .box-3 {
-            height: 370px;
-            display: flex;
-            gap: 1rem;
-            flex-direction: column;
-            text-align: center;
-            align-items: center;
-            width: 32%;
-            background-color: rgba(255, 255, 255, 0.849);
-            border-radius: 1rem;
-            padding: 2rem 1rem;
-            transition: all ease 0.3s;
-
+            background: var(--glass);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
         }
 
-        .box-3.box-3:hover {
-            transform: translateY(-6px);
-        }
-
-        .box-3 ul {
-            width: 100%;
-            text-align: start;
-
-        }
-
-        .box-3>div>i {
-            font-size: 3rem;
-            color: var(--secondary-color);
-        }
-
-        .box-3 h2 {
-            font-weight: 500;
-            font-size: 1.3rem;
-        }
-
-        .tick {
-            color: rgb(1, 158, 1);
-        }
-
-        .loc {
-            color: rgb(0, 110, 255);
-        }
-
-        .box-container-4 {
-            transition: all ease 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
-            border-radius: 1rem;
-        }
-
-        .process-heading {
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .process-heading h2 {
-            padding: 8px;
-            overflow: hidden;
-            border-top-left-radius: 1rem;
-            border-top-right-radius: 1rem;
-            font-weight: 500;
-            font-size: 1.3rem;
-            padding-bottom: 10px;
-            background-color: rgb(240, 240, 240);
-            border-bottom: 1.5px solid rgb(230, 230, 230);
-
-        }
-
-        .process {
-            display: flex;
-            justify-content: space-between;
-            text-align: center;
-            padding: 30px 10px;
-        }
-
-        .step {
-            width: 32%;
-            display: flex;
-            gap: 1rem;
-            flex-direction: column;
-        }
-
-        .step i {
-            color: var(--secondary-color);
-            font-size: 2rem;
-        }
-
-        .step h2 {
-            font-weight: 500;
-            font-size: 1rem;
-        }
-
-        .step p {
+        .box-3 i { font-size: 1.5rem; color: var(--accent-blue);}
+        .box-3 h2 { margin-bottom: 1rem; font-size: 1.4rem; }
+        .box-3 p { color: var(--text-dim); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .box-3 ul li {
+            margin-bottom: 12px;
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .box-container-4 .button-1 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 20px;
+        .tick { color: #00ff88; }
+        .loc { color: #ff3e3e; }
 
+        /* --- Section 4: Quick Start --- */
+        .box-container-4 {
+            background: var(--card-bg);
+            padding: 4rem 2rem;
+            border-radius: 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .box-container-4:hover {
-            transform: translateY(-6px);
+        .process-heading h2 { font-size: 2rem; margin-bottom: 3rem; color: var(--accent-blue); }
+        
+        .process {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
         }
 
+        .step i { font-size: 2.5rem; color: var(--text-dim); margin-bottom: 1rem; }
+        .step h2 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .step p { color: var(--text-dim); font-size: 0.9rem; }
+
+        .start-now { color: white; display: flex; align-items: center; gap: 8px; justify-content: center; }
+
+        /* --- Footer --- */
         footer {
-            background-color: var(--primary-color);
+            background: #05070a;
+            padding: 4rem 0 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .foot {
             display: flex;
             justify-content: space-between;
-            padding: 40px 0px;
-            color: white;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 2rem;
         }
 
-        .foot h2 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
+        .foot h2 { color: var(--accent-blue); margin-bottom: 10px; }
+        .foot p { color: var(--text-dim); font-size: 0.9rem; }
+
+        .icons { display: flex; gap: 1.5rem; margin-top: 1rem; }
+        .icons a { color: var(--text-dim); font-size: 1.3rem; }
+        .icons a:hover { color: var(--accent-blue); }
+
+        /* --- RESPONSIVENESS --- */
+
+        /* 1. Laptop / Desktop (Above 1024px is handled by default grid) */
+
+        /* 2. Tablet (Max 1024px) */
+        @media (max-width: 1024px) {
+            .box-container-2 { grid-template-columns: repeat(2, 1fr); }
+            .box-container-3 { grid-template-columns: repeat(1, 1fr); }
+            .process { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
         }
 
-        .icons {
-            display: flex;
-            justify-content: end;
-            gap: 1rem;
-            margin-top: 1rem;
+        /* 3. Phone (Max 768px) */
+        @media (max-width: 768px) {
+            header .window {  gap: 1rem; }
+            nav ul { gap: 1.5rem; }
+            main { padding-top: 180px; gap: 3rem; }
 
+            .box-container-2 { grid-template-columns: repeat(2, 1fr); }
+            .process { grid-template-columns: 1fr; gap: 2.5rem; }
+
+            .foot { text-align: center; justify-content: center; }
+            .icons { justify-content: center; }
         }
 
-        .start-now {
-            color: white
-        }
-
-        .icons i {
-            color: white;
+        /* Extra Small Phone (Max 480px) */
+        @media (max-width: 480px) {
+            .box-container-2 { grid-template-columns: 1fr; }
+            .box-container-1 h1 { font-size: 2.2rem; }
         }
     </style>
 </head>
 
 <body>
-    <!--------Header Section-------->
     <header>
         <div class="window">
-            <h2><i class="fa-solid fa-bolt"></i> PowerPulse Enhanced</h2>
+            <div class="logo"><i class="fa-solid fa-bolt"></i> PowerPulse</div>
             <nav>
                 <ul>
                     <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
-                    <li><a href="{{ url_for('login') }}"><i class="fa-solid fa-chart-line"></i> Forecast</a></li>
+                    <li><a href="/login"><i class="fa-solid fa-chart-line"></i> Forecast</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!---------Main Section--------->
     <main>
-        <!-------content 1 ------------->
         <div class="window box-container-1">
-
-            <div><i class="fa-solid fa-chart-line"></i></div>
-            <h1>PowerPulse Enhanced</h1>
+            <i class="fa-solid fa-chart-line"></i>
+            <h1>PowerPulse</h1>
             <div class="main-para">Advanced AI-powered electricity demand forecasting for Delhi regions</div>
-            <a href="{{ url_for('login') }}" class="button-1"><i class="fas fa-rocket"></i> Start Forecasting</a>
-
+            <a href="{{ url_for('login') }}" class="button-1">
+                <i class="fas fa-rocket"></i> Start Forecasting
+            </a>
         </div>
 
-        <!-------content 2--------------->
         <div class="window box-container-2">
-
-            <!------box 1-------->
-            <div class="box-2 one">
+            <div class="box-2">
                 <h1>82.4%</h1>
-                <p>Average Model Performance</p>
+                <p>Model Performance</p>
             </div>
-
-            <!------box 2-------->
-            <div class="box-2 two">
+            <div class="box-2">
                 <h1>6</h1>
                 <p>Delhi Regions</p>
             </div>
-
-            <!------box 3-------->
-            <div class="box-2 three">
+            <div class="box-2">
                 <h1>24/7</h1>
                 <p>Real-time Monitoring</p>
             </div>
-
-            <!------box 4-------->
-            <div class="box-2 four">
+            <div class="box-2">
                 <h1>3</h1>
                 <p>ML Models</p>
             </div>
         </div>
 
-        <!-------content 3------------>
         <div class="window box-container-3">
-            <!----------Box1--------->
             <div class="box-3">
-                <div><i class="fa-solid fa-brain"></i></div>
-                <h2>AI-Powered Predictions</h2>
-                <p>Advanced weighted ensemble of XGBoost, LightGBM, and Ridge Regression models optimized for
-                    high-accuracy electricity demand forecasting.</p>
-
+                <i class="fa-solid fa-brain"></i>
+                <h2>AI Predictions</h2>
+                <p>Advanced ensemble of XGBoost, LightGBM, and Ridge Regression models.</p>
                 <ul>
                     <li><i class="fa-solid fa-check tick"></i> XGBoost Regressor</li>
                     <li><i class="fa-solid fa-check tick"></i> LightGBM Regressor</li>
                     <li><i class="fa-solid fa-check tick"></i> Ridge Regression</li>
-                    <li><i class="fa-solid fa-check tick"></i> Weighted Ensemble (0.45 / 0.45 / 0.10)</li>
-                    <li><i class="fa-solid fa-check tick"></i> Advanced Feature Engineering (29 Features)</li>
+                    <li><i class="fa-solid fa-check tick"></i> Weighted Ensemble</li>
                 </ul>
             </div>
 
-            <!----------Box2--------->
             <div class="box-3">
-                <div><i class="fas fa-cloud-sun"></i></div>
-                <h2>Real-time Weather Integration</h2>
-                <p>Integrated with Open-Meteo API for real-time weather data with intelligent fallback mechanisms.</p>
+                <i class="fas fa-cloud-sun"></i>
+                <h2>Weather Integration</h2>
+                <p>Real-time data from Open-Meteo API with intelligent fallbacks.</p>
                 <ul>
-                    <li><i class="fa-solid fa-check tick"></i> Temprature Data</li>
+                    <li><i class="fa-solid fa-check tick"></i> Temperature Data</li>
                     <li><i class="fa-solid fa-check tick"></i> Humidity Levels</li>
                     <li><i class="fa-solid fa-check tick"></i> Wind Speed</li>
-                    <li><i class="fa-solid fa-check tick"></i> Fallback Data</li>
+                    <li><i class="fa-solid fa-check tick"></i> Intelligent Fallback</li>
                 </ul>
             </div>
 
-            <!----------Box3--------->
             <div class="box-3">
-                <div><i class="fas fa-map-marked-alt"></i></div>
-                <h2>Multi-Region Coverage</h2>
-                <p>Comprehensive coverage of all major electricity distribution regions in Delhi with dedicated models.
-                </p>
+                <i class="fas fa-map-marked-alt"></i>
+                <h2>Region Coverage</h2>
+                <p>Dedicated models for all major electricity distribution regions.</p>
                 <ul>
-                    <li><i class="fa-solid fa-map-pin loc"></i> Delhi</li>
-                    <li><i class="fa-solid fa-map-pin loc"></i> BRPL</li>
-                    <li><i class="fa-solid fa-map-pin loc"></i> BYPL</li>
-                    <li><i class="fa-solid fa-map-pin loc"></i> NDPL</li>
-                    <li><i class="fa-solid fa-map-pin loc"></i> NDMC</li>
-                    <li><i class="fa-solid fa-map-pin loc"></i> MES</li>
+                    <li><i class="fa-solid fa-map-pin loc"></i> Delhi / BRPL</li>
+                    <li><i class="fa-solid fa-map-pin loc"></i> BYPL / NDPL</li>
+                    <li><i class="fa-solid fa-map-pin loc"></i> NDMC / MES</li>
                 </ul>
             </div>
         </div>
 
-        <!----------Content 4---------->
         <div class="window box-container-4">
             <div class="process-heading">
-                <h2><i class="fas fa-rocket"></i> Quick Start Guide</h2>
+                <h2>Quick Start Guide</h2>
             </div>
-
             <div class="process">
-                <!----------Box 1------->
                 <div class="step">
                     <i class="fas fa-calendar-alt"></i>
                     <h2>1. Select Date</h2>
-                    <p>Choose the date for which you want to forecast electricity demand</p>
+                    <p>Choose your target date for the forecast</p>
                 </div>
-
-                <!------Box 2------->
                 <div class="step">
                     <i class="fa-solid fa-square-check"></i>
                     <h2>2. Choose Regions</h2>
-                    <p>Select one or more Delhi regions for demand prediction</p>
+                    <p>Select specific Delhi regions to analyze</p>
                 </div>
-
-                <!------Box 3------->
                 <div class="step">
                     <i class="fas fa-chart-bar"></i>
                     <h2>3. View Results</h2>
-                    <p>Get hourly predictions with peak demand analysis and visualizations</p>
+                    <p>Analyze peak demand and visualizations</p>
                 </div>
-
             </div>
-
-            <div class="button-1">
-                <a class="start-now" href="{{ url_for('login') }}"><i class="fa-solid fa-play"></i> Start Now</a>
-            </div>
+            <a href="{{ url_for('login') }}" class="button-1 start-now">
+                <i class="fa-solid fa-play"></i> Start Now
+            </a>
         </div>
     </main>
 
-
-    <!-----------Footer---------->
     <footer>
         <div class="window foot">
             <div>
-                <h2><i class="fa-solid fa-bolt"></i> PowerPulse Enhanced</h2>
-                <p>Advanced electricity demand forecasting with AI-powered predictions.</p>
+                <h2><i class="fa-solid fa-bolt"></i> PowerPulse</h2>
+                <p>AI-powered forecasting for Delhi energy demand..</p>
             </div>
-
             <div class="end-section">
-                <p>© 2025 PowerPulse Enhanced. All rights reserved.</p>
+                <p>© 2026 PowerPulse Enhanced. All rights reserved.</p>
                 <div class="icons">
                     <a href="#"><i class="fa-brands fa-github"></i></a>
                     <a href="#"><i class="fa-brands fa-linkedin"></i></a>
                     <a href="#"><i class="fa-solid fa-envelope"></i></a>
                 </div>
             </div>
-
         </div>
     </footer>
+
     <script>
+        // Clean history on refresh
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);
         }
     </script>
 </body>
-
-
 </html>

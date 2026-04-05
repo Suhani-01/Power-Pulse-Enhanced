@@ -4,147 +4,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login | PowerPulse Enhanced</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
+        /* --- Global Reset & Variables --- */
         * {
             box-sizing: border-box;
-            list-style: none;
             margin: 0;
             padding: 0;
-            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --success-color: #27ae60;
-            --warning-color: #f39c12;
-            --bs-nav-link-color: rgba(0, 0, 0, 0.65);
-            --gradient-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        a {
-            text-decoration: none;
+            --bg-dark: #0b0f19;
+            --card-bg: #161b2a;
+            --accent-blue: #00d2ff;
+            --text-bright: #ffffff;
+            --text-dim: #94a3b8;
+            --gradient: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+            --error-red: #ff4b2b;
         }
 
         body {
-            background-color: var(--primary-color);
+            background-color: var(--bg-dark);
+            color: var(--text-bright);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
+        a { text-decoration: none; transition: 0.3s ease; }
 
+        /* --- Reusable Window --- */
+        .window {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        /* --- Header --- */
         header {
             width: 100%;
             position: fixed;
+            top: 0;
             z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1.2rem 0;
         }
 
-        header div {
+        header .window {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 15px 10px;
+            align-items: center;
         }
 
         header h2 {
-            color: var(--primary-color);
-        }
-
-        nav ul {
-            display: flex;
-            gap: 1rem;
-            list-style: none;
-
-        }
-
-        nav ul a {
-            color: var(--bs-nav-link-color);
-            transition: all ease 0.2s;
-        }
-
-        nav ul a:hover {
-            color: black;
-        }
-
-
-        .window {
-            max-width: 1290px;
-            width: 100%;
-            margin-inline: auto;
-        }
-
-        main {
-            padding-top: 110px;
-            background: var(--gradient-bg);
-            padding-bottom: 40px;
-        }
-
-        .button-1 {
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            width: fit-content;
-            margin-inline: auto;
-            border: none;
-            cursor: pointer;
-            color: white;
-            padding: 10px 30px;
-            font-size: 1.1rem;
-            border-radius: 2rem;
-            background: linear-gradient(45deg, var(--secondary-color), #5dade2);
-            transition: all ease 0.3s;
-        }
-
-        .login-container {
-            background-color: white;
-            margin-inline: auto;
-            max-width: 550px;
-            width: 100%;
-            border-radius: 1rem;
-            padding: 30px;
-        }
-
-        .login-heading {
-            margin-top: 1.5rem;
-            text-align: center;
-            margin-bottom: 10px;
-
-
-
-        }
-
-        .login-heading h2 {
+            font-size: 1.4rem;
+            color: var(--accent-blue);
             font-weight: 700;
         }
 
-        .login-heading p {
-            color: rgb(101, 101, 101);
-            font-size: 1rem;
+        nav a{
+            color: var(--text-dim);
+            font-size: 1.2rem;
         }
 
+        nav a:hover { color: var(--accent-blue); }
+
+        /* --- Main Content (Login Box) --- */
+        main {
+            flex: 1;
+            padding-top: 150px;
+            padding-bottom: 60px;
+            background: radial-gradient(circle at top, rgba(0, 210, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .login-container {
+            background: var(--card-bg);
+            max-width: 500px;
+            width: 90%;
+            margin: 0 auto;
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .login-heading {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-heading h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-heading p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        /* --- Form Elements --- */
         .form-to-submit {
-            margin-top: 3rem;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .input-info {
-            padding-inline: 10px;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.6rem;
         }
 
-        .input-info input {
-            width: 100%;
-            padding: 10px;
-            padding-left: 30px;
-            border: 1px solid rgba(128, 128, 128, 0.267);
+        .input-info label {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-left: 5px;
         }
 
         .input-field {
@@ -153,75 +136,112 @@
 
         .input-icon {
             position: absolute;
-            color: grey;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            width: 35px;
-            justify-content: center;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-dim);
+            transition: 0.3s;
         }
 
-        .input-info input.clicked {
-            color: black;
+        .input-info input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            transition: 0.3s;
         }
 
-
-        input:focus {
+        .input-info input:focus {
             outline: none;
+            border-color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.1);
         }
 
+        /* Highlight icon on focus */
         .input-field:focus-within .input-icon {
-            color: black;
-            outline: none;
+            color: var(--accent-blue);
         }
 
-        .error-message{
-            color: red;
+        /* --- Submit Button --- */
+        .button-1 {
+            margin-top: 1rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2);
+        }
+
+        .button-1:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 210, 255, 0.3);
+        }
+
+        .error-message {
+            color: var(--error-red);
             text-align: center;
-            margin-bottom:1rem ;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
+        /* --- Footer --- */
         footer {
-            background-color: var(--primary-color);
+            background: #05070a;
+            padding: 3rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: auto;
         }
 
         .foot {
             display: flex;
             justify-content: space-between;
-            padding: 40px 0px;
-            color: white;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
         }
 
-        .foot h2 {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
+        .foot h2 { color: var(--accent-blue); font-size: 1.2rem; }
+        .foot p { color: var(--text-dim); font-size: 0.85rem; }
+
+        .icons { display: flex; gap: 1.2rem; }
+        .icons a { color: var(--text-dim); font-size: 1.2rem; }
+        .icons a:hover { color: var(--accent-blue); }
+
+        /* --- Responsiveness --- */
+
+        /* Tablet (Max 768px) */
+        @media (max-width: 768px) {
+            header .window { flex-direction: row; }
+            main { padding-top: 120px; }
+            .login-container { padding: 30px 20px; }
+            .foot { flex-direction: column; text-align: center; }
         }
 
-        .icons {
-            display: flex;
-            justify-content: end;
-            gap: 1rem;
-            margin-top: 1rem;
-
-        }
-        
-
-        .icons i {
-            color: white;
+        /* Mobile (Max 480px) */
+        @media (max-width: 480px) {
+            .login-heading h2 { font-size: 1.6rem; }
+            .login-container { width: 95%; }
         }
     </style>
 </head>
 
 <body>
-    <!--------Header Section-------->
     <header>
         <div class="window">
-            <h2><i class="fa-solid fa-bolt"></i> PowerPulse Enhanced</h2>
+            <h2><i class="fa-solid fa-bolt"></i> PowerPulse</h2>
             <nav>
-                <ul>
-                    <li><a href="{{ url_for('index') }}"><i class="fas fa-arrow-left"></i></a></li>
-
-                </ul>
+                
+                    <a href="/"><i class="fas fa-arrow-left"></i> Back</a>
             </nav>
         </div>
     </header>
@@ -230,70 +250,55 @@
         <div class="login-container">
             <div class="login-heading">
                 <h2>Login to Continue</h2>
-                <p>Enter your username and password to access the prediction system</p>
+                <p>Enter credentials to access the AI prediction system</p>
             </div>
 
-
-            <!------Form--------->
             <form class="form-to-submit" method="POST" action="{{ url_for('login') }}">
                 <div class="input-info">
                     <label for="username">Username</label>
                     <div class="input-field">
                         <i class="fa-solid fa-user input-icon"></i>
-                        <input type="text" placeholder="enter username" id="username" name="username" required />
+                        <input type="text" placeholder="Enter username" id="username" name="username" required />
                     </div>
-
                 </div>
 
                 <div class="input-info">
                     <label for="password">Password</label>
                     <div class="input-field">
                         <i class="fa-solid fa-lock input-icon"></i>
-                        <input type="password" placeholder="enter password" id="password" name="password" required />
+                        <input type="password" placeholder="Enter password" id="password" name="password" required />
                     </div>
-
                 </div>
 
-
                 <button class="button-1" type="submit">Proceed</button>
-
-
-
             </form>
-
-                <!-- if username and password is wrong -->
-                <!-- take message and category from the flash that is being recieved -->
-
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            {% if category == 'danger' %}
-                                <p class="error-message">* {{ message }} *</p>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+ 
+                {% if message %}
+                   
+                            <p class="error-message">
+                                <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+                            </p>
+                    
+                {% endif %}
+      
         </div>
-
     </main>
 
-    <!-----------Footer---------->
     <footer>
         <div class="window foot">
             <div>
-                <h2><i class="fa-solid fa-bolt"></i> PowerPulse Enhanced</h2>
-                <p>Advanced electricity demand forecasting with AI-powered predictions.</p>
+                <h2><i class="fa-solid fa-bolt"></i> PowerPulse</h2>
+                <p>AI-powered forecasting for Delhi energy demand..</p>
             </div>
 
             <div class="end-section">
-                <p>© 2025 PowerPulse Enhanced. All rights reserved.</p>
+                <p>© 2026 PowerPulse Enhanced. All rights reserved.</p>
                 <div class="icons">
                     <a href="#"><i class="fa-brands fa-github"></i></a>
                     <a href="#"><i class="fa-brands fa-linkedin"></i></a>
                     <a href="#"><i class="fa-solid fa-envelope"></i></a>
                 </div>
             </div>
-
         </div>
     </footer>
 </body>
